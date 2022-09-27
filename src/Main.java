@@ -6,11 +6,11 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-       // Task model = aaa();
+        // Task model = aaa();
         Task model = new Task();
-        Scanner a= new Scanner(System.in);
+        Scanner a = new Scanner(System.in);
         //model.setTaskName("Call");
-        String b=a.nextLine();
+        String b = a.nextLine();
         model.setTaskName(b);
         model.setDescription("Call to Nikita");
         model.setContacts(1234);

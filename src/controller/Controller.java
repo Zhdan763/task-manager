@@ -13,11 +13,11 @@ public class Controller {
         this.view = view;
     }
 
-    public void display () {
+    public void display() {
         view.printInfo(model.getTaskName(), model.getDescription(), model.getContacts());
     }
 
-    }
+}
 
 
 
