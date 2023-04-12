@@ -34,6 +34,11 @@ public class Controller {
         journal.addTask(task);
     }
 
+    public void createTask(String taskName, String description, Date date, int id) {
+        Task task = TaskFactory.createTask(taskName, description, date, id);
+        journal.addTask(task);
+    }
+
     public void deleteTask(int id) {  //проверка что доступна, если нет, то задача не найдена как апдейт
         journal.removeTask(id);
     }

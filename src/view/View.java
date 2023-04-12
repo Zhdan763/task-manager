@@ -151,7 +151,8 @@ public class View {
             }
         }
 
-       controller.updateTask(controller.getTask(id2));
+        controller.createTask(name, description, date, id2);
+        controller.updateTask(controller.getTask(id2));
 
     }
 
