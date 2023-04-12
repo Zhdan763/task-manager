@@ -111,7 +111,7 @@ public class View {
     }
 
 
-    private void deleteTask() {
+    private void deleteTask() throws TaskNotFoundException {
         System.out.println("What task do you want to delete?");
         System.out.print("\nEnter id: ");
         // String id = scanner.nextLine();

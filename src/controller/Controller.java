@@ -39,8 +39,14 @@ public class Controller {
         journal.addTask(task);
     }
 
-    public void deleteTask(int id) {  //проверка что доступна, если нет, то задача не найдена как апдейт
-        journal.removeTask(id);
+    public void deleteTask(int id) throws TaskNotFoundException {  //проверка что доступна, если нет, то задача не найдена как апдейт
+        if (journal.getTask(id) !=null) {
+            journal.removeTask(id);
+        } else {
+            throw new TaskNotFoundException(String.format("Task with id \"%d\" not found", id));
+        }
+
+       // journal.removeTask(id);
     }
 
     public void updateTask(Task task) throws TaskNotFoundException {
