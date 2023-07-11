@@ -3,6 +3,7 @@ package view;
 import controller.Controller;
 import controller.IdGenerator;
 import exceptions.TaskNotFoundException;
+import model.Journal;
 import model.Task;
 
 import java.sql.SQLException;
@@ -19,6 +20,7 @@ public class View {
 
     Controller controller = Controller.getController();
 
+
     public static View getView() {
         if (view == null) {
             view = new View();
@@ -32,7 +34,7 @@ public class View {
     }
 
 
-    public void run() throws ParseException, TaskNotFoundException {
+    public void run() {
         int menuAction = -1;
 
         System.out.println("Task Manager");
@@ -86,7 +88,7 @@ public class View {
         scanner.nextLine();
     }
 
-    private void createTask() throws ParseException {
+    private void createTask()  {
         System.out.println("\nNew Task:");
         System.out.print("Enter name: ");
         String name = scanner.nextLine();
@@ -111,25 +113,32 @@ public class View {
     }
 
 
-    private void deleteTask() throws TaskNotFoundException {
+    private void deleteTask()  {
         System.out.println("What task do you want to delete?");
         System.out.print("\nEnter id: ");
-        // String id = scanner.nextLine();
-        // Integer id2 = Integer.valueOf(id);
-        //Integer idForDel = id2;
-        //controller.deleteTask(idForDel);
-        // System.out.println("Task number "+idForDel+" has been deleted");
         String id = scanner.nextLine();
         int id2 = Integer.valueOf(id);
-        controller.deleteTask(id2);
+        try {
+            controller.deleteTask(id2);   //catch
+        } catch (TaskNotFoundException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
         System.out.println("Task number " + id2 + " has been deleted");
     }
 
-    private void modifyTask() throws TaskNotFoundException {
+    private void modifyTask()  {
         System.out.println("What task do you want to change?");
         System.out.print("\nEnter id: ");
         String id = scanner.nextLine();
         int id2 = Integer.valueOf(id);
+
+        try {
+            controller.checkTask(id2);
+        } catch (TaskNotFoundException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
 
         System.out.print("Enter name: ");
         String name = scanner.nextLine();
@@ -152,7 +161,12 @@ public class View {
         }
 
         controller.createTask(name, description, date, id2);
-        controller.updateTask(controller.getTask(id2));
+        try {
+            controller.updateTask(controller.getTask(id2));
+        } catch (TaskNotFoundException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
 
     }
 

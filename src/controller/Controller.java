@@ -74,6 +74,15 @@ public class Controller {
         // return null;
     }
 
+    //можно так?
+    public void checkTask (int id) throws TaskNotFoundException {
+        if (journal.getTask(id) !=null) {
+
+        } else {
+            throw new TaskNotFoundException(String.format("Task with id \"%d\" not found", id));
+        }
+    }
+
 }
 
 
