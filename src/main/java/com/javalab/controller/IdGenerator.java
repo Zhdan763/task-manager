@@ -1,4 +1,4 @@
-package controller;
+package com.javalab.controller;
 
 
 public class IdGenerator {
@@ -13,12 +13,6 @@ public class IdGenerator {
         this.counter = startValue;
     }
 
-    public int getNextId() {
-        //todo
-
-        return counter++;
-    }
-
     public static synchronized IdGenerator getIdGenerator() {
         if (idGenerator == null) {
             idGenerator = new IdGenerator();
@@ -31,6 +25,10 @@ public class IdGenerator {
             idGenerator = new IdGenerator(startValue);
         }
         return idGenerator;
+    }
+
+    public int getNextId() {
+        return counter++;
     }
 
 }

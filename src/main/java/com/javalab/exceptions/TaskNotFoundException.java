@@ -1,4 +1,4 @@
-package exceptions;
+package com.javalab.exceptions;
 
 public class TaskNotFoundException extends Exception {
     public TaskNotFoundException() {
@@ -7,7 +7,7 @@ public class TaskNotFoundException extends Exception {
 
     public TaskNotFoundException(String message) {
         super(message);
-            }
+    }
 
 
 }

@@ -1,7 +1,6 @@
-package controller;
+package com.javalab.controller;
 
-import model.Task;
-import model.Journal;
+import com.javalab.model.Task;
 
 import java.util.Date;
 

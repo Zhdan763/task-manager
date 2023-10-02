@@ -1,4 +1,4 @@
-package model;
+package com.javalab.model;
 
 
 import java.util.Date;
@@ -10,13 +10,14 @@ public class Task {
     private Date date;
     private int id;
 
-    public Task() {    }
+    public Task() {
+    }
 
     public Task(String taskName, String description, Date date, int id) {
         this.taskName = taskName;
         this.description = description;
         this.date = date;
-        this.id= id;
+        this.id = id;
     }
 
     public String getTaskName() {
