@@ -1,9 +1,11 @@
 package com.javalab.view;
 
 import com.javalab.controller.Controller;
+import com.javalab.controller.scheduler.TaskScheduler;
 import com.javalab.exceptions.ExportException;
 import com.javalab.exceptions.ImportException;
 import com.javalab.exceptions.TaskNotFoundException;
+import com.javalab.model.Status;
 import com.javalab.model.Task;
 
 import java.text.ParseException;
@@ -12,28 +14,28 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class View {
-    private static View view;
+public class ConsoleView {
+    private static ConsoleView consoleView;
     private Controller controller;
     private final Scanner scanner;
 
-    private View(Controller controller) {
+    private ConsoleView(Controller controller) {
         this.scanner = new Scanner(System.in);
         this.controller = controller;
     }
 
-    public static View getView(Controller controller) {
-        if (view == null) {
-            view = new View(controller);
+    public static ConsoleView getView(Controller controller) {
+        if (consoleView == null) {
+            consoleView = new ConsoleView(controller);
 
         }
-        return view;
+        return consoleView;
     }
 
     public void run() {
         int menuAction = -1;
         System.out.println("Task Manager");
-        while (menuAction != 7) {
+        while (menuAction != 8) {
             menuAction = runMenu();
             switch (menuAction) {
                 case 1:
@@ -65,6 +67,9 @@ public class View {
                 case 7:
                     System.out.println("\n Good bye!");
                     break;
+                case 8:
+                    test();
+                    break;
                 default:
                     System.out.println("Error: Incorrect value, please choose correct");
                     break;
@@ -82,6 +87,7 @@ public class View {
         System.out.println("5. Export journal");
         System.out.println("6. Import journal");
         System.out.println("7. Exit");
+        System.out.println("8. Test");
         System.out.print("\nAction: ");
         String input = scanner.nextLine();
         return Integer.valueOf(input);
@@ -177,6 +183,18 @@ public class View {
     private void importJournal() throws ImportException {
         String filePath = controller.importJournal();
         System.out.println("Journal was imported from a file: " + filePath);
+    }
+
+    private void test() {
+        TaskScheduler taskScheduler = new TaskScheduler();
+        taskScheduler.scheduleTask(
+                new Task(
+                        "aaa",
+                        "bbb",
+                        new Date(System.currentTimeMillis() + 3000),
+                        2,
+                        Status.PENDING)
+        );
     }
 }
 

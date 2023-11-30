@@ -10,6 +10,7 @@ import com.javalab.importmanager.ImportManager;
 import com.javalab.model.Journal;
 import com.javalab.model.Task;
 import com.javalab.util.PropertiesReader;
+
 import java.util.Date;
 import java.util.List;
 
@@ -99,6 +100,8 @@ public class Controller {
         this.journal = importManager.importJournal(pathToFile, dataFormat);
         return pathToFile;
     }
+
+
 }
 
 

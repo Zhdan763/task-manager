@@ -1,5 +1,6 @@
 package com.javalab.controller;
 
+import com.javalab.model.Status;
 import com.javalab.model.Task;
 
 import java.util.Date;
@@ -11,6 +12,7 @@ public class TaskFactory {
         task.setDescription(description);
         task.setDate(date);
         task.setId(id);
+        task.setTaskStatus(Status.PENDING);
         return task;
     }
 
@@ -20,7 +22,9 @@ public class TaskFactory {
         task.setDescription(description);
         task.setDate(date);
         task.setId(IdGenerator.getIdGenerator().getNextId());
+        task.setTaskStatus(Status.PENDING);
         return task;
     }
+
 
 }

@@ -9,16 +9,19 @@ public class Task {
     private String description;
     private Date date;
     private int id;
+    private Status taskStatus;
 
     public Task() {
     }
 
-    public Task(String taskName, String description, Date date, int id) {
+    public Task(String taskName, String description, Date date, int id, Status taskStatus) {
         this.taskName = taskName;
         this.description = description;
         this.date = date;
         this.id = id;
+        this.taskStatus = taskStatus;
     }
+
 
     public String getTaskName() {
         return taskName;
@@ -52,17 +55,25 @@ public class Task {
         this.id = id;
     }
 
+    public Status getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(Status taskStatus) {
+        this.taskStatus = taskStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && taskName.equals(task.taskName) && description.equals(task.description) && date.equals(task.date);
+        return id == task.id && Objects.equals(taskName, task.taskName) && Objects.equals(description, task.description) && Objects.equals(date, task.date) && Objects.equals(taskStatus, task.taskStatus);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(taskName, description, date, id);
+        return Objects.hash(taskName, description, date, id, taskStatus);
     }
 
     @Override
@@ -72,6 +83,7 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", date=" + date +
                 ", id=" + id +
+                ", taskStatus='" + taskStatus + '\'' +
                 '}';
     }
 }
