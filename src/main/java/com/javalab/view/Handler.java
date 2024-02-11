@@ -5,12 +5,14 @@ import com.javalab.exceptions.PropertiesFileNotFoundException;
 import com.javalab.exceptions.TaskNotFoundException;
 import com.javalab.model.Task;
 import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.Date;
 
@@ -19,7 +21,9 @@ import static javafx.application.Platform.runLater;
 public class Handler {
 private Task task;
 
-
+    public Handler(Task task) {
+        this.task = task;
+    }
 
 //    public void startHandler(Stage stage) throws IOException, PropertiesFileNotFoundException, TaskNotFoundException {
 //        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Window1.fxml"));
@@ -41,18 +45,38 @@ private Task task;
 //    }
 
 public void handlerStart()  {
-//    runLater(() -> {
-//        try {
-//            showNotificationView();
-//        } catch (Exception e) {
-//            e.printStackTrace();
+    System.out.println(task);
+//    SwingUtilities.invokeLater(new Runnable() {
+//        @Override
+//        public void run() {
+//            new JFXPanel();
+//            Platform.runLater(() -> {
+//                try {
+//                    showNotificationView();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            });
 //        }
 //    });
-    try {
-        showNotificationView();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
+
+
+
+
+
+
+    Platform.startup(() -> {
+        try {
+            showNotificationView();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    });
+//    try {
+//        showNotificationView();
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//    }
 }
 
 private Stage createStage() throws IOException {

@@ -1,11 +1,7 @@
 package com.javalab.view;
 
 import com.javalab.controller.Controller;
-import com.javalab.controller.scheduler.TaskScheduler;
-import com.javalab.exceptions.ExportException;
-import com.javalab.exceptions.ImportException;
-import com.javalab.exceptions.TaskNotFoundException;
-import com.javalab.model.Status;
+import com.javalab.exceptions.*;
 import com.javalab.model.Task;
 
 import java.text.ParseException;
@@ -35,20 +31,28 @@ public class ConsoleView {
     public void run() {
         int menuAction = -1;
         System.out.println("Task Manager");
-        while (menuAction != 8) {
+        while (menuAction != 7) {
             menuAction = runMenu();
             switch (menuAction) {
                 case 1:
                     showTasks();
                     break;
                 case 2:
-                    createTask();
+                    try {
+                        createTask();
+                    } catch (CreateTaskException | TaskSchedulerException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 3:
                     deleteTask();
                     break;
                 case 4:
-                    modifyTask();
+                    try {
+                        modifyTask();
+                    } catch (CreateTaskException | TaskSchedulerException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 5:
                     try {
@@ -62,13 +66,12 @@ public class ConsoleView {
                         importJournal();
                     } catch (ImportException e) {
                         System.out.println(e.getMessage());
+                    } catch (TaskSchedulerException e) {
+                        e.printStackTrace();
                     }
                     break;
                 case 7:
                     System.out.println("\n Good bye!");
-                    break;
-                case 8:
-                    test();
                     break;
                 default:
                     System.out.println("Error: Incorrect value, please choose correct");
@@ -87,7 +90,6 @@ public class ConsoleView {
         System.out.println("5. Export journal");
         System.out.println("6. Import journal");
         System.out.println("7. Exit");
-        System.out.println("8. Test");
         System.out.print("\nAction: ");
         String input = scanner.nextLine();
         return Integer.valueOf(input);
@@ -103,7 +105,7 @@ public class ConsoleView {
         scanner.nextLine();
     }
 
-    private void createTask() {
+    private void createTask() throws CreateTaskException, TaskSchedulerException {
         System.out.println("\nNew Task:");
         System.out.print("Enter name: ");
         String name = scanner.nextLine();
@@ -111,9 +113,9 @@ public class ConsoleView {
         String description = scanner.nextLine();
         Date date;
         while (true) {
-            System.out.print("Enter date (yyyy-mm-dd): ");
+            System.out.print("Enter date (yyyy-MM-dd HH:mm): ");
             String dateAa = scanner.nextLine();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
             try {
                 date = formatter.parse(dateAa);
                 System.out.println("Correct date");
@@ -134,12 +136,12 @@ public class ConsoleView {
         try {
             controller.deleteTask(id2);
             System.out.println("Task number " + id2 + " has been deleted");
-        } catch (TaskNotFoundException e) {
+        } catch (TaskNotFoundException | TaskSchedulerException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private void modifyTask() {
+    private void modifyTask() throws CreateTaskException, TaskSchedulerException {
         System.out.println("What task do you want to change?");
         System.out.print("\nEnter id: ");
         String id = scanner.nextLine();
@@ -155,9 +157,9 @@ public class ConsoleView {
         String description = scanner.nextLine();
         Date date;
         while (true) {
-            System.out.print("Enter date (yyyy-mm-dd): ");
+            System.out.print("Enter date (yyyy-MM-dd HH:mm): ");
             String dateAa = scanner.nextLine();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
             try {
                 date = formatter.parse(dateAa);
                 System.out.println("Correct date");
@@ -169,7 +171,7 @@ public class ConsoleView {
         controller.createTask(name, description, date, id2);
         try {
             controller.updateTask(controller.getTask(id2));
-        } catch (TaskNotFoundException e) {
+        } catch (TaskNotFoundException | TaskSchedulerException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
@@ -180,21 +182,10 @@ public class ConsoleView {
         System.out.println("Journal save to the path: " + filePath);
     }
 
-    private void importJournal() throws ImportException {
+    private void importJournal() throws ImportException, TaskSchedulerException {
         String filePath = controller.importJournal();
         System.out.println("Journal was imported from a file: " + filePath);
     }
 
-    private void test() {
-        TaskScheduler taskScheduler = new TaskScheduler();
-        taskScheduler.scheduleTask(
-                new Task(
-                        "aaa",
-                        "bbb",
-                        new Date(System.currentTimeMillis() + 3000),
-                        2,
-                        Status.PENDING)
-        );
-    }
 }
 

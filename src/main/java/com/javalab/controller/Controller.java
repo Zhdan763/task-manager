@@ -1,14 +1,14 @@
 package com.javalab.controller;
 
 
-import com.javalab.exceptions.ExportException;
-import com.javalab.exceptions.ImportException;
-import com.javalab.exceptions.PropertiesFileNotFoundException;
-import com.javalab.exceptions.TaskNotFoundException;
+import com.javalab.controller.scheduler.TaskScheduler;
+import com.javalab.exceptions.*;
 import com.javalab.export.ExportManager;
 import com.javalab.importmanager.ImportManager;
 import com.javalab.model.Journal;
+import com.javalab.model.Status;
 import com.javalab.model.Task;
+import com.javalab.util.CompareDates;
 import com.javalab.util.PropertiesReader;
 
 import java.util.Date;
@@ -20,12 +20,14 @@ public class Controller {
     private ExportManager exportManager;
     private ImportManager importManager;
     private PropertiesReader propertiesReader;
+    private TaskScheduler taskScheduler;
 
     private Controller() throws PropertiesFileNotFoundException {
         this.journal = new Journal();
         this.propertiesReader = new PropertiesReader();
         this.exportManager = new ExportManager();
         this.importManager = new ImportManager();
+        this.taskScheduler = new TaskScheduler();
     }
 
     public static synchronized Controller getController() throws PropertiesFileNotFoundException {
@@ -35,28 +37,39 @@ public class Controller {
         return controller;
     }
 
-    public void createTask(String taskName, String description, Date date) {
+    public void createTask(String taskName, String description, Date date) throws CreateTaskException, TaskSchedulerException {
+        CompareDates.checkDate(date);
         Task task = TaskFactory.createTask(taskName, description, date);
         journal.addTask(task);
+        taskScheduler.scheduleTask(task);
     }
 
-    public void createTask(String taskName, String description, Date date, int id) {
+    public void createTask(String taskName, String description, Date date, int id) throws CreateTaskException, TaskSchedulerException {
+        CompareDates.checkDate(date);
         Task task = TaskFactory.createTask(taskName, description, date, id);
         journal.addTask(task);
+        taskScheduler.scheduleTask(task);
     }
 
-    public void deleteTask(int id) throws TaskNotFoundException {
+    public void deleteTask(int id) throws TaskNotFoundException, TaskSchedulerException {
         if (journal.getTask(id) != null) {
+            taskScheduler.cancelTask(journal.getTask(id));
             journal.removeTask(id);
         } else {
             throw new TaskNotFoundException(String.format("Task with id \"%d\" not found", id));
         }
     }
 
-    public void updateTask(Task task) throws TaskNotFoundException {
+    public void updateTask(Task task) throws TaskNotFoundException, TaskSchedulerException {
         if (journal.getTask(task.getId()) != null) {
+            taskScheduler.cancelTask(task);
             journal.removeTask(task.getId());
-            journal.addTask(task);
+            if (task.getTaskStatus() == Status.CANCELED || task.getTaskStatus() == Status.COMPLETED) {
+                journal.addTask(task);
+            } else {
+                journal.addTask(task);
+                taskScheduler.scheduleTask(task);
+            }
         } else {
             throw new TaskNotFoundException(String.format("Task with id \"%d\" not found", task.getId()));
         }
@@ -81,12 +94,6 @@ public class Controller {
         }
     }
 
-    public void exportTask(int id) throws ExportException {
-        String filePath = propertiesReader.getPropertyByName("data.file.path");
-        Task task = journal.getTask(id);
-        exportManager.exportTask(task, filePath);
-    }
-
     public String exportJournal() throws ExportException {
         String dataFormat = propertiesReader.getPropertyByName("data.format");
         String pathToFile = propertiesReader.getPropertyByName("data.file.path");
@@ -94,14 +101,30 @@ public class Controller {
         return pathToFile;
     }
 
-    public String importJournal() throws ImportException {
+    public String importJournal() throws ImportException, TaskSchedulerException {
         String dataFormat = propertiesReader.getPropertyByName("data.format");
         String pathToFile = propertiesReader.getPropertyByName("data.file.path");
         this.journal = importManager.importJournal(pathToFile, dataFormat);
+        List<Task> taskList = journal.getAllTasks();
+        for (Task task : taskList
+        ) {
+            if (task.getTaskStatus() == Status.CANCELED) {
+            } else if (task.getTaskStatus() == Status.COMPLETED) {
+            } else {
+                Date dateTask = task.getDate();
+                Date dateNow = new Date(System.currentTimeMillis());
+                int compare = dateTask.compareTo(dateNow);
+                if (compare == 0 || compare == -1) {
+                    task.setTaskStatus(Status.OVERDUE);
+                } else if (compare == 1) {
+                    task.setTaskStatus(Status.PENDING);
+                    TaskScheduler taskScheduler = new TaskScheduler();
+                    taskScheduler.scheduleTask(task);
+                }
+            }
+        }
         return pathToFile;
     }
-
-
 }
 
 

@@ -3,6 +3,7 @@ package com.javalab.view;
 import com.javalab.controller.Controller;
 import com.javalab.exceptions.PropertiesFileNotFoundException;
 import com.javalab.exceptions.TaskNotFoundException;
+import com.javalab.exceptions.TaskSchedulerException;
 import com.javalab.model.Status;
 import com.javalab.model.Task;
 import javafx.event.ActionEvent;
@@ -77,7 +78,7 @@ public class ControllerWindow1 {
 
 
     @FXML
-    void completed(ActionEvent event) throws PropertiesFileNotFoundException, TaskNotFoundException {
+    void completed(ActionEvent event) throws PropertiesFileNotFoundException, TaskNotFoundException, TaskSchedulerException {
         task.setTaskStatus(Status.COMPLETED);
         Controller controller = Controller.getController();
         controller.updateTask(task);
@@ -106,7 +107,7 @@ public class ControllerWindow1 {
     }
 
     @FXML
-    void noDone(ActionEvent event) throws PropertiesFileNotFoundException, TaskNotFoundException {
+    void noDone(ActionEvent event) throws PropertiesFileNotFoundException, TaskNotFoundException, TaskSchedulerException {
         task.setTaskStatus(Status.CANCELED);
         Controller controller = Controller.getController();
         controller.updateTask(task);

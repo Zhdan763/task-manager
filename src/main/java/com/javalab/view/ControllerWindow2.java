@@ -4,10 +4,12 @@ package com.javalab.view;
 import com.javalab.controller.Controller;
 import com.javalab.exceptions.PropertiesFileNotFoundException;
 import com.javalab.exceptions.TaskNotFoundException;
+import com.javalab.exceptions.TaskSchedulerException;
 import com.javalab.model.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.time.Instant;
@@ -34,6 +36,8 @@ public class ControllerWindow2 {
 
     @FXML
     private TextField textMinutes;
+
+
 
 
     @FXML
@@ -67,7 +71,7 @@ public class ControllerWindow2 {
     }
 
     @FXML
-    void onAnotherVariant(ActionEvent event) throws PropertiesFileNotFoundException, TaskNotFoundException {
+    void onAnotherVariant(ActionEvent event) throws PropertiesFileNotFoundException, TaskNotFoundException, TaskSchedulerException {
         System.out.println("before "+task);
         String hoursString = textHour.getText();
         int hours=Integer.parseInt(hoursString);
@@ -92,6 +96,8 @@ public class ControllerWindow2 {
         System.out.println("я из контроллера 2 хай");
         System.out.println(task);
     }
+
+
 
 
 }
